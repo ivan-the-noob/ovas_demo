@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Booking Status</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h2>View Booking Status</h2>
+    <form id="viewStatusForm">
+        <label for="date">Select Date:</label>
+        <input type="date" id="date" name="date" required>
+        <input type="submit" value="View Status">
+    </form>
+
+    <div id="statusResults">
+        <!-- Booking status will be displayed here -->
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#viewStatusForm').on('submit', function(event) {
+                event.preventDefault();
+                var date = $('#date').val();
+                $.ajax({
+                    url: 'get_booking_status.php',
+                    method: 'POST',
+                    data: {date: date, user_id: 1}, // Replace with actual user_id
+                    success: function(response) {
+                        var appointments = JSON.parse(response);
+                        var statusHtml = '<h3>Booking Status on ' + date + ':</h3>';
+                        statusHtml += '<ul>';
+                        for (var i = 0; i < appointments.length; i++) {
+                            statusHtml += '<li>Code: ' + appointments[i].code + ' - Status: ' + appointments[i].status + '</li>';
+                        }
+                        statusHtml += '</ul>';
+                        $('#statusResults').html(statusHtml);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
